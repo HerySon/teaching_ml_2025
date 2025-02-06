@@ -18,6 +18,10 @@ def detectCleaningdata(df):
     Returns:
     pd.DataFrame: The cleaned DataFrame.
     """
+
+    # Delete duplicated lines and null lines
+    df.drop_duplicates()
+    df.dropna(how='all',inplace=False)
     #Step 1: Clean the serving_size
     # Use regex to extract numeric part (handles both integers and decimals)
     df["serving_size"] = df["serving_size"].str.extract(r'([\d\.]+)', expand=False)
