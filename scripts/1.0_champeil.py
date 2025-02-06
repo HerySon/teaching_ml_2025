@@ -1,7 +1,7 @@
 """
 Function for task 1.0
 The function will first delete duplicate and empty rows
-Then it will delete >80% empty columns column and inpute the missing values for both numerical and categorical columns
+Then it will delete >80% empty columns column
 Finally, it will replace the NaN with nearest neighbour for numericals and most frequent for categoricals
 Args : df -> the dataframe to be cleansed
 Returns : df -> the cleansed dataframe
