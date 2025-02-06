@@ -9,6 +9,12 @@ Returns : df -> the cleansed dataframe
 from sklearn.impute import SimpleImputer
 def clean_dataset(df):
 
+    #Drop columns that are not related at all to the product
+    df.drop(['url', 'creator', 'created_t', 'created_datetime', 'last_modified_t',
+             'last_modified_datetime','last_modified_by', 'last_updated_t',
+             'last_updated_datetime', 'generic_name', 'image_url', 'image_small_url',
+             'image_ingredients_url','image_ingredients_small_url', 'image_nutrition_url',
+             'image_nutrition_small_url'], axis=1, inplace=True)
     # Delete the duplicates rows
     df.drop_duplicates(inplace=True)
 
