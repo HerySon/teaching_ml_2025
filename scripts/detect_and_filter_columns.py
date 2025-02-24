@@ -1,12 +1,12 @@
 import pandas as pd
 
-def detect_and_filter_columns(df, max_categories=10, downcast=True, max_unique_for_ordinal=None):
+def detect_and_filter_columns(df, max_categories=50, downcast=True, max_unique_for_ordinal=None):
     """
     Identifie et sépare les colonnes numériques, ordinales et non ordinales d'un DataFrame.
 
     Args:
         df (pd.DataFrame): Le DataFrame à analyser.
-        max_categories (int, optionnel): Le nombre maximum de catégories pour qu'une colonne soit considérée comme ordinale (par défaut 10).
+        max_categories (int, optionnel): Le nombre maximum de catégories pour qu'une colonne soit considérée comme ordinale (par défaut 50).
         downcast (bool, optionnel): Si True, les colonnes numériques seront optimisées pour la mémoire (par défaut True).
         max_unique_for_ordinal (int, optionnel): Le nombre maximal de valeurs uniques pour identifier les colonnes ordinales. Si None, utilise `max_categories`.
 
