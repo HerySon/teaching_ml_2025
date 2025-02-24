@@ -89,7 +89,12 @@ def delete_data(df,columns_to_drop):
     Returns:
         _type_: _description_
     """
-    df.drop(columns_to_drop, axis='columns', inplace=True)
+    #df.drop(columns_to_drop, axis='columns', inplace=True)
+        # Filtrer les colonnes à supprimer pour ne garder que celles présentes dans le DataFrame
+    columns_to_drop = [col for col in columns_to_drop if col in df.columns]
+    
+    # Supprimer les colonnes
+    df.drop(columns=columns_to_drop, axis=1, inplace=True)
     return df
 
 
