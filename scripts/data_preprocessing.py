@@ -15,7 +15,7 @@ def detect_and_filter_columns(df, max_categories=10):
     1. Detects and downcasts numerical columns.
     2. Identifies and converts categorical columns.
     3. Filters categorical columns based on unique category count.
-    4. Selects and returns relevant columns.
+    4. Selects and returns relevant columns
     """
     # Detect numerical columns
     numeric_columns = df.select_dtypes(include=['int', 'float']).columns.tolist()
@@ -45,5 +45,5 @@ def detect_and_filter_columns(df, max_categories=10):
     df_filtered = df[relevant_columns]
 
     return df_filtered
-
+ 
 
