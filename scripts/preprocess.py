@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import re
-from sklearn.impute import KNNImputer
+from sklearn.impute import KNNImputer, SimpleImputer
 
 
 
@@ -111,6 +111,10 @@ def impute_data(df):
     imputed_values = np.round(imputed_values, 1)
 
     df.loc[:, numeric_features.columns] = imputed_values
+
+    categorical_features = df.select_dtypes(include=['object', 'category'])
+    cat_imputer = SimpleImputer(strategy='most_frequent')
+    df.loc[:, categorical_features.columns] = cat_imputer.fit_transform(categorical_features)
     
     return df_original, df
     
