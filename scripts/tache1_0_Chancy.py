@@ -113,28 +113,3 @@ def imputation_of_numerical_val(df_params):
 
 
 
-if __name__ == "__main__":
-    # Création d'un DataFrame d'exemple
-    df = pd.read_csv(
-        "/Users/chancybayedi-mayombo/PycharmProjects/Project_ML_ml/teaching_ml_2025/notebooks/openfoodfacts_50000_lignes.csv",
-        encoding="utf-8",
-        sep="\t",
-        low_memory=False
-    )
-    print("DataFrame original:\n", df)
-
-    # Test des fonctions
-    df = removal_of_duplicates(df)
-    print("\nAprès suppression des doublons:\n", df)
-
-    df = data_cleaning(df)
-    print("\nAprès nettoyage des données:\n", df)
-
-    df = non_useful_columns(df)
-    print("\nAprès suppression des colonnes non utiles:\n", df)
-
-    df = imputation_of_categorical_val(df)
-    print("\nAprès imputation des valeurs catégorielles:\n", df)
-
-    df = imputation_of_numerical_val(df)
-    print("\nAprès imputation des valeurs numériques:\n", df)
