@@ -37,13 +37,3 @@ def filter_dataframe(df: pd.DataFrame, cat_threshold: int = 10):
     }
 
 
-# Exemple d'utilisation
-df = pd.read_csv(
-    "/Users/chancybayedi-mayombo/PycharmProjects/Project_ML_ml/teaching_ml_2025/notebooks/openfoodfacts_50000_lignes.csv",
-    encoding="utf-8",
-    sep="\t",
-    low_memory=False
-)
-
-filtered_columns = filter_dataframe(df)
-print(filtered_columns)
