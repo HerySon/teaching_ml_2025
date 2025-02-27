@@ -7,3 +7,8 @@ en.openfoodfacts.org.products.csv
 .idea
 .vscode
 .coverage
+df_afterenconding
+df_befenconding
+df_cleaned
+df_scaled
+Projet.ipynb
