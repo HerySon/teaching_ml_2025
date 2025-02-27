@@ -3,70 +3,66 @@ from sklearn.impute import SimpleImputer, KNNImputer
 import pandas as pd
 import numpy as np
 
-def detectCleaningdata(df):
+def detect_Cleaning_data(df, extra_columns_to_remove=None, suffixes_to_drop=None):
     """
-    Clean the DataFrame by:
-    - Clean the `serving_size` column by extracting only the numeric part and discarding units.
-    - Dropping columns with suffixes '_t' or '_datetime'.
-    - Removing specified columns like 'url' and 'creator' (if they exist).
-    - Keeping only the '_tags' variant when multiple versions of the same column exist
-      (such as 'categories', 'categories_tags', 'categories_en').
+    Cleans the DataFrame by extracting numeric values from `serving_size`, optionally removing specific columns 
+    or those with certain suffixes, and keeping only the '_tags' variant when multiple versions exist.
 
     Parameters:
     df (pd.DataFrame): The input DataFrame to be cleaned.
+    extra_columns_to_remove (list, optional): Specific columns to remove. If None, no columns are removed.
+    suffixes_to_drop (list, optional): List of suffixes for columns to be dropped. If None, no suffix-based columns are removed.
 
     Returns:
     pd.DataFrame: The cleaned DataFrame.
     """
 
     # Delete duplicated lines and null lines
-    df.drop_duplicates()
-    df.dropna(how='all',inplace=False)
-    #Step 1: Clean the serving_size
-    # Use regex to extract numeric part (handles both integers and decimals)
+    df.drop_duplicates(inplace=True)
+    df.dropna(how='all', inplace=True)
+
+    # Step 1: Clean the serving_size column
     df["serving_size"] = df["serving_size"].str.extract(r'([\d\.]+)', expand=False)
-    
-    # Convert extracted numbers to float and handle NaN values
     df["serving_size"] = pd.to_numeric(df["serving_size"], errors='coerce')
 
-    # Step 2: Drop columns based on suffix
-    suffixes_to_drop = ['_t', '_datetime', '_url', '_by']
-    columns_to_drop = [col for col in df.columns if any(col.endswith(suffix) for suffix in suffixes_to_drop)]
+    # Step 2: Drop columns based on suffixes (only if suffixes_to_drop is provided)
+    columns_to_drop = []
+    if suffixes_to_drop:
+        columns_to_drop.extend([col for col in df.columns if any(col.endswith(suffix) for suffix in suffixes_to_drop)])
 
-    # Manually add specific columns to drop
-    columns_to_remove = ['url', 'creator']
-    columns_to_drop.extend([col for col in columns_to_remove if col in df.columns])
+    # Step 3: Drop specific columns (only if extra_columns_to_remove is provided)
+    if extra_columns_to_remove:
+        columns_to_drop.extend([col for col in extra_columns_to_remove if col in df.columns])
 
-    # Step 3: Keep only '_tags' variant if multiple column versions exist
-    # Identify related columns and keep only '_tags' if present
+    # Step 4: Keep only '_tags' variant if multiple column versions exist
     grouped_columns = {}
 
     for col in df.columns:
-        # Extract base name by removing the suffix (_tags, _en, etc.) if it exists
-        base_name = col.split('_')[0]  # Always take the first part
+        base_name = col.split('_')[0]  # Extract base name before suffix
         if base_name not in grouped_columns:
             grouped_columns[base_name] = []
         grouped_columns[base_name].append(col)
 
     for base_name, cols in grouped_columns.items():
         if len(cols) > 1:
-            # Check if a '_tags' column exists
             to_keep = next((col for col in cols if col.endswith('_tags')), None)
             if to_keep:
-                # Remove all columns except the '_tags' column
                 to_remove = [col for col in cols if col != to_keep]
                 columns_to_drop.extend(to_remove)
 
-    # Step 4: Drop columns from the DataFrame
-    columns_to_drop = [col for col in columns_to_drop if col in df.columns]
+    # Step 5: Drop the identified columns only if there are any to drop
+    columns_to_drop = list(set(columns_to_drop))  # Remove duplicates
 
-    # Drop the identified columns
-    df.drop(columns=columns_to_drop, errors='ignore', inplace=True)
+    if columns_to_drop:  
+        df.drop(columns=[col for col in columns_to_drop if col in df.columns], errors='ignore', inplace=True)
+        print("Dropped columns:", columns_to_drop)
+    else:
+        print("No columns were dropped.")
 
-    print("Dropped columns:", columns_to_drop)
+    return df  # Return the cleaned DataFrame
 
 
-def cleaningMissingData(df, threshold):
+def cleaning_Missing_Data(df, threshold):
     """
     Removes columns with a percentage of missing data above a given threshold.
 
