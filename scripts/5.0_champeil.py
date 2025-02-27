@@ -7,14 +7,17 @@ Arguments : Df -> Dataframe to be analysed
 Output : Plt -> The plot for the intertia per cluster metric
 ---------------------------------
 train_kmeans will create and train a Kmeans model. Model will be created with the parameters found using GridSearch
-Arguments : df -> the dataframe to be used for training, it will be splitted in train and test during the process
+Arguments : df -> the dataframe to be used for training
             nb_clusters : number of clusters that the model will create, defaut value is 4 of not given
 
 Output : best_kmeans -> the trained model, to be used as you need
 '''
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+import joblib
 
 def determine_clusters(df):
 
@@ -25,7 +28,7 @@ def determine_clusters(df):
         kmeans.fit(df)
         inertias.append(kmeans.inertia_)
 
-    # Displat the curve for inertia/cluster
+    # Display the curve for inertia/cluster
     plt.plot(range(1, 11), inertias)
     plt.xlabel('Cluster ammount')
     plt.ylabel('Inertia')
@@ -34,14 +37,8 @@ def determine_clusters(df):
 
     return plt
 
-from sklearn.cluster import KMeans
-from sklearn.model_selection import GridSearchCV, train_test_split
-from sklearn.preprocessing import StandardScaler
 
 def train_kmeans(df, nb_clusters=4):
-
-    # Split the data into train and test
-    X_train, X_test = train_test_split(df, test_size=0.2, random_state=42)
 
     # Initialize the KMeans model
     kmeans = KMeans()
@@ -56,14 +53,13 @@ def train_kmeans(df, nb_clusters=4):
 
     # GridSearch
     grid_search = GridSearchCV(estimator=kmeans, param_grid=param_grid, cv=3)
-    grid_search.fit(X_train)  # Training with GridSearch on training data
+    grid_search.fit(df)  # Training with GridSearch
 
     # Best parameters found
     best_params = grid_search.best_params_
-    print("Best Parameters:", best_params)
 
     # Create KMeans model with the best parameters
-    best_kmeans = KMeans(
+    grid_kmeans = KMeans(
         n_clusters=best_params['n_clusters'],
         init=best_params['init'],
         max_iter=best_params['max_iter'],
@@ -71,9 +67,6 @@ def train_kmeans(df, nb_clusters=4):
     )
 
     # Train the model with the best parameters
-    best_kmeans.fit(X_train)
-
-    # Make predictions on test data
-    #predictions = best_kmeans.predict(X_test)
+    grid_kmeans.fit(df)
 
     return best_kmeans
