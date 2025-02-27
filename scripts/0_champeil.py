@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 def get_types(df) :
 
-    return df.dtypes
+    print(df.dtypes)
 
 def get_numerical(df):
     # store numerical columns in an array
@@ -20,11 +20,16 @@ def get_categorical(df):
     categorical_columns = df.select_dtypes(include=[object]).columns
     return categorical_columns
 
-def downcast_floats(df):
+def downcast_floats(df,target=32):
     # Reduce float size to increase performance and reduce dataframe size
     # Target type can be ajusted from float32 to any that suits
     for col in df.select_dtypes(include=[np.float64]).columns:
-        df[col] = df[col].astype(np.float32)
+        if target == 16:
+            df[col] = df[col].astype(np.float16)
+        elif target == 32:
+            df[col] = df[col].astype(np.float32)
+        else:
+            print("Cannot proceed to upcasting, wrong value in argument, must be 32 or 16")
     return df
 
 '''
