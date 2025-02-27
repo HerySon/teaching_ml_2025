@@ -69,4 +69,4 @@ def train_kmeans(df, nb_clusters=4):
     # Train the model with the best parameters
     grid_kmeans.fit(df)
 
-    return best_kmeans
+    return grid_kmeans
