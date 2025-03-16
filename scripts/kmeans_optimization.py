@@ -1,9 +1,6 @@
-import pandas as pd
-import numpy as np
 from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, adjusted_mutual_info_score, contingency_matrix
+from sklearn.metrics import silhouette_score
 from sklearn.model_selection import GridSearchCV, train_test_split
-from sklearn.pipeline import Pipeline
 import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
@@ -24,13 +21,11 @@ def optimize_kmeans(df, numeric_cols, param_grid):
     X = df[numeric_cols]
     X_train, X_test = train_test_split(X, test_size=0.2, random_state=42)
 
-    # Create a pipeline with KMeans
-    pipeline = Pipeline([
-        ('kmeans', KMeans(random_state=42))
-    ])
+    # Create KMeans model
+    kmeans = KMeans(random_state=42)
 
     # Perform GridSearchCV to find the best parameters
-    grid_search = GridSearchCV(pipeline, param_grid, cv=5, scoring='adjusted_mutual_info_score')
+    grid_search = GridSearchCV(kmeans, param_grid, cv=5, scoring='adjusted_mutual_info_score')
     grid_search.fit(X_train)
 
     # Print the best parameters and score
